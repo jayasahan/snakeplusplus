@@ -65,8 +65,8 @@ void generateFood() {
         c = rand() % COLS;
     } while (board[r][c] != 0);
 
-    food = { r, c };
-    board[r][c] = 2;
+    food = { r, c };   // Mark food position for UI rendering
+    board[r][c] = 2;   // 2 represents food on the board
 }
 
 // Reset all game state for a new run

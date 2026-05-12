@@ -141,15 +141,15 @@ public:
 
         // Controls
         DrawText("WASD / Arrow Keys  -  Move",  cx - 180, 340, 20, LIGHTGRAY);
-        DrawText("P / ESC            -  Pause", cx - 180, 368, 20, LIGHTGRAY);
+        DrawText("ESC                -  Exit", cx - 180, 368, 20, LIGHTGRAY);
         DrawText("Eat food to grow the snake",  cx - 180, 396, 20, LIGHTGRAY);
 
         // DS labels
         DrawText("DS USED:",
                  cx - 180, 444, 18, Color{255, 220, 100, 255});
-        DrawText("  2D Array          - Game board",
+        DrawText("  2D Array for Game board",
                  cx - 180, 468, 16, C_DS_LL);
-        DrawText("  Queue             - Snake body segments",
+        DrawText("  Queue for Snake body segments",
                  cx - 180, 490, 16, C_DS_Q);
 
         // Blinking start prompt
