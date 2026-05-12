@@ -2,11 +2,11 @@
 
 // Snake UI configuration and rendering
 
-#include "raylib.h"
-#include <string>
-#include <queue>
-#include <cmath>
-#include <cstdio>
+#include "raylib.h"      // Raylib for graphics and input
+#include <string>        // std::string for text handling
+#include <queue>         // std::queue for snake body representation
+#include <cmath>         // std::sinf for animations
+#include <cstdio>        // std::snprintf for formatted text  
 
 // Data structures
 struct Position { int row; int col; };
