@@ -1,4 +1,4 @@
-// Snake Game Entry Point
+
 // Wires game logic to the UI layer.
 
 // Game logic includes
@@ -10,32 +10,35 @@
 #include <string>
 
 // Raylib for graphics
-// Use project include path (-I./include) so headers are located consistently
+// Raylib header path
 #include "raylib.h"
 
-// UI layer for rendering
+// UI header
 #include "ui.h"
 
 using namespace std;
 
-// Game constants (board size and pacing)
+// Board size and pacing
 const int ROWS = 24;
 const int COLS = 50;
 
-// Snake step interval in seconds
+// Snake step interval 
 const float GAME_SPEED_SEC = 0.220f;
 
-// Game state variables (board cells, snake queue, current run state)
+// Game state variables 
+// Board cells, Snake queue 
 int   board[ROWS][COLS];
 queue<Position> snake;
 Position food;
+
+// Current movement direction
 char  direction  = 'R';
 bool  gameOver   = false;
 int   score      = 0;
 int   highScore  = 0;
 string highScoreName = "No player yet";
 
-// Core game logic functions
+// Game logic functions
 
 // Load high score from disk if available
 void loadHighScore() {
