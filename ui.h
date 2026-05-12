@@ -1,4 +1,4 @@
-#pragma once
+#pragma once  // Prevent multiple inclusions
 
 // Snake UI configuration and rendering
 
