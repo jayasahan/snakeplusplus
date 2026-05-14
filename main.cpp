@@ -39,7 +39,6 @@ int   highScore  = 0;
 string highScoreName = "No player yet";
 
 // Game logic functions
-
 // Load high score from disk if available
 void loadHighScore() {
     ifstream file("highscore.txt");
@@ -51,13 +50,13 @@ void loadHighScore() {
     }
 }
 
-// Persist high score to disk
+// high score to disk
 void saveHighScore() {
     ofstream file("highscore.txt");
     file << highScore << "\n" << highScoreName << "\n";
 }
 
-// Place food on a random empty cell
+// food
 void generateFood() {
     int r, c;
     do {
@@ -65,11 +64,11 @@ void generateFood() {
         c = rand() % COLS;
     } while (board[r][c] != 0);
 
-    food = { r, c };   // Mark food position for UI rendering
-    board[r][c] = 2;   // 2 represents food on the board
+    food = { r, c };   // UI rendering
+    board[r][c] = 2;   
 }
 
-// Reset all game state for a new run
+// Reset for a new run
 void initializeGame() {
     srand((unsigned)time(0));
     loadHighScore();
@@ -85,7 +84,7 @@ void initializeGame() {
     gameOver  = false;
     score     = 0;
 
-    // Spawn snake at board center
+    // Spawn snake 
     Position start = { ROWS / 2, COLS / 2 };
     snake.push(start);
     board[start.row][start.col] = 1;
@@ -93,12 +92,12 @@ void initializeGame() {
     generateFood();
 }
 
-// Wall collision check
+// Wall collision 
 bool hitWall(Position p) {
     return p.row < 0 || p.row >= ROWS || p.col < 0 || p.col >= COLS;
 }
 
-// Advance the snake one step; handle collisions and growth
+// move snake
 void moveSnake() {
     Position head    = snake.back();
     Position newHead = head;
@@ -108,26 +107,26 @@ void moveSnake() {
     else if (direction == 'L') newHead.col--;
     else if (direction == 'R') newHead.col++;
 
-    // End game if we hit a wall
+    // End game 
     if (hitWall(newHead)) { gameOver = true; return; }
 
-    // Determine whether we are consuming food
+    // check food eaten
     bool ateFood = board[newHead.row][newHead.col] == 2;
 
-    // Allow moving into the tail cell if the tail will move away
+    // tail movement
     Position tail = snake.front();
     bool movingIntoTail =
         newHead.row == tail.row &&
         newHead.col == tail.col &&
         !ateFood;
 
-    // Self-collision ends the game
+    // Self-collision e
     if (board[newHead.row][newHead.col] == 1 && !movingIntoTail) {
         gameOver = true;
         return;
     }
 
-    // If no food is eaten, move tail forward
+    // if no food is eaten
     if (!ateFood) {
         snake.pop();
         board[tail.row][tail.col] = 0;
@@ -136,15 +135,14 @@ void moveSnake() {
     snake.push(newHead);
     board[newHead.row][newHead.col] = 1;
 
-    // Eating food grows the snake and increments score
+    // Eating food 
     if (ateFood) {
         score++;
-        // Play sound here if needed
         generateFood();
     }
 }
 
-// Handle keyboard input and prevent immediate reversal
+// Keyboard input 
 void inputDirection() {
     if ((IsKeyDown(KEY_W) || IsKeyDown(KEY_UP))    && direction != 'D') direction = 'U';
     if ((IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN))  && direction != 'U') direction = 'D';
@@ -156,11 +154,11 @@ void inputDirection() {
 static int WindowW() { return (COLS + 4) * CELL; }   // board + 2-cell border each side
 static int WindowH() { return (ROWS + 6) * CELL; }   // board + top panel + borders
 
-// Main entry point
+// M
 int main() {
-    // Configure and init window
+  
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(WindowW(), WindowH(), "SNAKE++  |  8-bit Edition");
+    InitWindow(WindowW(), WindowH(), "Snake++ : a demonstration of data structures in a game ");
     SetTargetFPS(60);
 
     // Initialize UI renderer and layout
@@ -170,19 +168,19 @@ int main() {
     // Set initial screen state
     Screen currentScreen = Screen::TITLE;
 
-    // Load high score for title display
+    
     loadHighScore();
 
-    // Snake movement timer (accumulates frame time)
+    // Snake movement timer (frame time)
     float moveTimer = 0.f;
 
-    // High score flag for game-over handling
+    // High score 
     bool isNewHighScore = false;
 
     // Main game loop
     while (!WindowShouldClose()) {
 
-        // Advance UI animations and timing
+        // UI animations and timing
         float dt = GetFrameTime();
         ui.Update();
 
@@ -193,7 +191,7 @@ int main() {
         switch (currentScreen) {
 
         case Screen::TITLE:
-            // Start a new game from the title screen
+            // press enter
             if (IsKeyPressed(KEY_ENTER)) {
                 initializeGame();
                 moveTimer     = 0.f;
@@ -206,7 +204,6 @@ int main() {
             break;
 
         case Screen::PLAYING:
-            // Input
             inputDirection();
 
             // Move snake on timer
@@ -229,16 +226,15 @@ int main() {
             break;
 
         case Screen::GAME_OVER:
-            // Draw the frozen game frame under the overlay
             BeginDrawing();
             ui.DrawGame(board, snake, score, highScore, highScoreName, direction);
             ui.DrawGameOver(score, highScore, highScoreName, isNewHighScore);
             EndDrawing();
 
-            // Enter to restart or go to name entry for new high score
+            // Restart and go to name entry 
             if (IsKeyPressed(KEY_ENTER)) {
                 if (isNewHighScore) {
-                    // Go to name entry
+                    // name entry
                     ui.ResetName();
                     currentScreen = Screen::NAME_ENTRY;
                 } else {
@@ -248,7 +244,7 @@ int main() {
                     currentScreen = Screen::PLAYING;
                 }
             }
-            // Esc quits the game immediately
+            // Esc quits the game 
             if (IsKeyPressed(KEY_ESCAPE)) {
                 CloseWindow();
                 return 0;
@@ -256,7 +252,8 @@ int main() {
             break;
 
         case Screen::NAME_ENTRY:
-            // Capture player name for new high score
+        {
+            // Player name 
             BeginDrawing();
             ui.DrawGame(board, snake, score, highScore, highScoreName, direction);
             bool done = ui.DrawNameEntry(score);
@@ -267,7 +264,7 @@ int main() {
                 highScoreName = ui.GetEnteredName();
                 saveHighScore();
 
-                // Restart after saving name
+                // Restart
                 initializeGame();
                 moveTimer     = 0.f;
                 currentScreen = Screen::PLAYING;
@@ -275,7 +272,9 @@ int main() {
             break;
         }
     }
+    }
 
     CloseWindow();
     return 0;
+    
 }

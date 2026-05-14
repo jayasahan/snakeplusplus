@@ -2,7 +2,7 @@
 
 // Snake UI configuration and rendering
 
-#include "raylib.h"      // Raylib for graphics and input
+#include "raylib.h"      // Raylib
 #include <string>        // std::string for text handling
 #include <queue>         // std::queue for snake body representation
 #include <cmath>         // std::sinf for animations
@@ -44,10 +44,10 @@ struct UIParticle {
     Color   color;
     bool    active;
 };
-// Particle pool size for small burst effects
+// for small burst effects
 static const int MAX_P = 64;
 
-// UI Renderer class (all rendering and UI input handling)
+// UI Renderer 
 class UIRenderer {
 public:
     int ROWS, COLS;
