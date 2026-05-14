@@ -98,7 +98,7 @@ bool hitWall(Position p) {
 }
 
 // move snake
-void moveSnake() {
+void moveSnake(UIRenderer& ui) {
     Position head    = snake.back();
     Position newHead = head;
 
@@ -138,6 +138,7 @@ void moveSnake() {
     // Eating food 
     if (ateFood) {
         score++;
+        ui.OnEat(food.row, food.col);
         generateFood();
     }
 }
@@ -209,7 +210,7 @@ int main() {
             // Move snake on timer
             moveTimer += dt;
             if (moveTimer >= GAME_SPEED_SEC) {
-                moveSnake();
+                moveSnake(ui);
                 moveTimer = 0.f;
             }
 
@@ -220,6 +221,8 @@ int main() {
 
             // Check game over
             if (gameOver) {
+                Position head = snake.back();              
+                ui.SpawnExplosion(head.row, head.col); 
                 isNewHighScore = score > highScore;
                 currentScreen  = Screen::GAME_OVER;
             }
@@ -253,25 +256,17 @@ int main() {
 
         case Screen::NAME_ENTRY:
         {
-            // Player name 
-            BeginDrawing();
-            ui.DrawGame(board, snake, score, highScore, highScoreName, direction);
-            bool done = ui.DrawNameEntry(score);
-            EndDrawing();
-
-            if (done) {
+            if (IsKeyPressed(KEY_ENTER)) {
                 highScore     = score;
                 highScoreName = ui.GetEnteredName();
                 saveHighScore();
-
-                // Restart
                 initializeGame();
                 moveTimer     = 0.f;
                 currentScreen = Screen::PLAYING;
             }
             break;
         }
-    }
+        }
     }
 
     CloseWindow();

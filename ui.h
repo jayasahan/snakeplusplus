@@ -3,12 +3,11 @@
 // Snake UI configuration and rendering
 
 #include "raylib.h"      // Raylib
-#include <string>        // std::string for text handling
-#include <queue>         // std::queue for snake body representation
-#include <cmath>         // std::sinf for animations
-#include <cstdio>        // std::snprintf for formatted text  
+#include <string>        
+#include <queue>         
+#include <cmath>         
+#include <cstdio>         
 
-// Data structures
 struct Position { int row; int col; };
 
 // Game screens
@@ -117,11 +116,10 @@ public:
         SpawnParticles(x, y);
     }
 
-    // Draw title screen
+    // Title screen
     void DrawTitle(int hiScore, const std::string& hiName) {
         ClearBackground(C_BG);
 
-        // Centered title layout
         int cx = GetScreenWidth() / 2;
 
         DrawText("SNAKE",
@@ -139,12 +137,10 @@ public:
                  cx - MeasureText(hbuf, 20) / 2,
                  290, 20, C_BEST_COL);
 
-        // Controls
         DrawText("WASD / Arrow Keys  -  Move",  cx - 180, 340, 20, LIGHTGRAY);
         DrawText("ESC                -  Exit", cx - 180, 368, 20, LIGHTGRAY);
         DrawText("Eat food to grow the snake",  cx - 180, 396, 20, LIGHTGRAY);
 
-        // DS labels
         DrawText("DS USED:",
                  cx - 180, 444, 18, Color{255, 220, 100, 255});
         DrawText("  2D Array for Game board",
@@ -168,16 +164,14 @@ public:
         const std::queue<Position>& snakeQ,
         int score, int hiScore, const std::string& hiName,
         char direction,
-        int level = 1,
-        int inputQueueSize = 0
-    ) {
+        int level = 1) {
         ClearBackground(C_BG);
         // Render all playfield layers
         _DrawGrid();
         _DrawFood(board);
         _DrawSnake(board, snakeQ, direction);
         _DrawParticles();
-        _DrawHUD(score, hiScore, level, (int)snakeQ.size(), inputQueueSize);
+        _DrawHUD(score, hiScore, level, (int)snakeQ.size());
     }
 
     // Draw pause screen mask
@@ -219,8 +213,8 @@ public:
                      282, 22, C_TITLE_GRN);
 
         // Score history (stack concept)
-        DrawText("--- Score History (Queue/Stack) ---",
-                 sw / 2 - MeasureText("--- Score History (Queue/Stack) ---", 20) / 2,
+        DrawText("--- * ---",
+                 sw / 2 - MeasureText("--- * ---", 20) / 2,
                  318, 20, C_DS_STACK);
 
         int show = (historyCount < 5) ? historyCount : 5;
@@ -256,7 +250,8 @@ public:
         DrawText(TextFormat("Score: %d", score),
                  sw / 2 - MeasureText(TextFormat("Score: %d", score), 28) / 2,
                  230, 28, WHITE);
-
+        
+        /////////////////// not Added in UI
         DrawText("Enter your name:",
                  sw / 2 - MeasureText("Enter your name:", 24) / 2,
                  300, 24, LIGHTGRAY);
@@ -278,7 +273,7 @@ public:
                  sw / 2 - MeasureText("ENTER to confirm", 18) / 2,
                  400, 18, Color{150, 150, 150, 200});
 
-        // Keyboard input (printable ASCII only)
+        // Keyboard input /////////////////// not Added in UI
         int key = GetCharPressed();
         while (key > 0) {
             if (key >= 32 && key <= 125 && (int)nameBuffer.size() < 18)
@@ -291,7 +286,7 @@ public:
         return IsKeyPressed(KEY_ENTER);
     }
 
-    // Retrieve entered name (fallback if empty)
+    // Retrieve entered name /////////////////// not Added in UI
     std::string GetEnteredName() const {
         return nameBuffer.empty() ? "Player" : nameBuffer;
     }
@@ -334,6 +329,7 @@ private:
         }
     }
 
+    // ********
     // Render snake segments with a head-to-tail gradient
     void _DrawSnake(const int board[][50],
                     const std::queue<Position>& snakeQ,
@@ -342,21 +338,12 @@ private:
 
         Position headPos = snakeQ.back();
         int      total   = (int)snakeQ.size();
-        int      idx     = total - 1;   // head = back, so draw back→front visually
-
-        // Iterate a copy of the queue tail→head to assign gradient index
-        std::queue<Position> tmp = snakeQ;
-        // We need head-first order for gradient t=0 at head.
-        // Build a simple array from the queue (front=tail → back=head).
-        // Max snake size is ROWS*COLS which is at most 24*50=1200.
-        // Use dynamic approach: front of queue is the tail (idx=total-1 in gradient),
-        // back of queue is the head (idx=0 in gradient).
+        int      idx     = total - 1;   
 
         std::queue<Position> copy = snakeQ;
         int count = (int)copy.size();
 
-        // Draw each segment: assign gradient t by position in queue
-        // front = tail (t close to 1), back = head (t=0)
+        // Draw each segment. front = tail t=1, back = head t=0
         for (int i = 0; i < count; i++) {
             Position seg = copy.front(); copy.pop();
 
@@ -375,7 +362,7 @@ private:
             DrawRectangle(px + 2, py + 2, CELL - 4, CELL - 4,
                           Color{gr, gg, gb, 255});
 
-            // Head decoration (i = count-1 is the head / back of queue)
+            // Head decoration (i = count-1 = head) 
             if (i == count - 1) {
                 DrawRectangleLinesEx(
                     {(float)px + 1, (float)py + 1,
@@ -409,8 +396,7 @@ private:
     }
 
     // Draw heads-up display information
-    void _DrawHUD(int score, int hiScore, int level, int snakeLen,
-                  int queuedInputs) {
+    void _DrawHUD(int score, int hiScore, int level, int snakeLen) {
         DrawText(TextFormat("SCORE: %d", score),
                  GRID_X,           20, 28, C_SCORE_COL);
         DrawText(TextFormat("BEST:  %d", hiScore),
@@ -424,8 +410,5 @@ private:
         int by = GRID_Y + GRID_H + 8;
         DrawText("2D ARRAY: Game Board",   GRID_X,       by, 14, C_DS_LL);
         DrawText("QUEUE: Snake Body",       GRID_X + 260, by, 14, C_DS_Q);
-        DrawText(TextFormat("[%d queued]", queuedInputs),
-                 GRID_X + 420,             by, 13,
-                 Color{150, 200, 255, 160});
     }
 };
